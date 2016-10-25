@@ -8,7 +8,6 @@
 
   <!-- Politicas Header -->
   <div class="policies-header section-header">
-
     <div class="container">
       {% if programme %}
       <p class="history-back">
@@ -18,18 +17,19 @@
       </p>
       <h2 class="page-title">{{ name }}</h2>
       {% else %}
+<!--
       <p class="history-back">
         {% set targetView = 'functional' if type=='functional' else show_side %}
         <a href="{{ url(show_entity_url, entity.slug) if entity else url('budget_app.views.policies') }}#view={{targetView}}">&larr; {{ _('Volver a Políticas') }}</a>
       </p>
+-->
       <h2 class="page-title">{{ entity.name+': ' if entity }}{{ name }}</h2>
       {% endif %}
 
-      <!-- TODO!!! Check if we need this lines -->
       <h2 class="hidden">{{ _('Programas, entidades y conceptos') }}</h2>
       <h2 class="hidden">{{ _('Menú de programas, entidades y conceptos') }}</h2>
     </div>
-
+<!--
     <ul id="tabs" class="nav nav-tabs nav-tabs-centered" role="tablist">
     {% if full_breakdown %}
       {% if programme is not defined and show_side != 'income' %}
@@ -80,6 +80,7 @@
       {% endif %}
     {% endif %}
     </ul>
+-->
   </div>
 
   <!-- Policies Content -->
