@@ -12,7 +12,7 @@ function BudgetTreemap(selector, breakdown, stats, areas, aspectRatio, colorScal
   var i18n = [];
   var budgetStatuses = {};
   var transitionDuration = 650;
-  var minSizeWithLabel = 70;
+  var minSizeWithLabel = 20;
   var mouseOver = true;
   var paddedYears = {};
   var maxLevels = -1; // By default, don't limit treemap depth
@@ -346,6 +346,12 @@ function BudgetTreemap(selector, breakdown, stats, areas, aspectRatio, colorScal
         .attr("leaf", function(d) { return d.leaf; });
   }
 
+  function myFormatAmount(value) {
+    if (value == null) return '';
+    value = Number(value/100); // Also note value is in cents originally
+    return formatNumber(value)+'€';
+  }
+
   function setLabels() {
 
     treemapItems.each(function(d) {
@@ -356,18 +362,18 @@ function BudgetTreemap(selector, breakdown, stats, areas, aspectRatio, colorScal
         var height = Math.max(d.dy - 8, 0);
         var length = textWidth(d.name);
         var area = width * height;
-        var size = 10*Math.sqrt(area/(length*10));  // We're using a 10px*10px font size for calculation
+        var size = 8*Math.sqrt(area/(length*10));  // We're using a 10px*10px font size for calculation
 
         var text = d3.select(this.parentNode)
           .append("text")
           .attr("class", "treemap-text")
           .attr("width", width)
           .attr("height", height)
-          .style("font-size", Math.min(size,80)+"px" )
+          .style("font-size", Math.min(size,30)+"px" )
           .attr("x", d.x + d.dx/2 )
           .attr("y", d.y )
           .attr("dy", 1.2)
-          .text(d.name)
+          .text(d.name+": "+myFormatAmount(d[2017]))
           .call(wrap);
       }
     });
