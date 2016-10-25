@@ -3,6 +3,32 @@ from coffin.shortcuts import render_to_response
 from budget_app.models import BudgetBreakdown, Entity, EconomicCategory
 from helpers import *
 
+
+# Object used to define data as literal. See http://stackoverflow.com/a/2466207
+class DataPoint(object):
+    def __init__(self, *initial_data, **kwargs):
+        for dictionary in initial_data:
+            for key in dictionary:
+                setattr(self, key, dictionary[key])
+        for key in kwargs:
+            setattr(self, key, kwargs[key])
+
+data = [
+    [2017, '11', True, 1706881300],
+    [2017, '22', True, 58230000],
+    [2017, '33', True, 980353000],
+    [2017, '44', True, 1240799700],
+    [2017, '55', True, 407845000],
+]
+
+entity_descriptions = [
+    ['11', 'Ciutat i Territori'],
+    ['22', 'Comerç, Civisme i Promoció de la Ciutat'],
+    ['33', "Nova governança, Econòmia i Promoció Econòmica"],
+    ['44', 'Serveis de benestar i acció social'],
+    ['55', "Deute públic"],
+]
+
 def entities_index(request, c, level, render_callback=None):
     # Get the budget breakdown
     c['economic_breakdown'] = BudgetBreakdown(['name'])
@@ -60,6 +86,11 @@ def entities_show(request, c, entity, render_callback=None):
         get_budget_breakdown(   "e.id = %s and ec.chapter <> 'X'", [ entity.id ],
                                 [ c['economic_breakdown'] ] )
 
+    c['scope_breakdown'] = BudgetBreakdown(['name'])
+    for item in data:
+        item = DataPoint(year=item[0], name=item[1], expense=item[2], amount=item[3])
+        c['scope_breakdown'].add_item(item.year, item)
+
     # Additional data needed by the view
     populate_level(c, entity.level)
     populate_entity_stats(c, entity)
@@ -70,6 +101,9 @@ def entities_show(request, c, entity, render_callback=None):
     populate_area_descriptions(c, ['functional', 'income', 'expense'])
     _set_full_breakdown(c, entity.level == settings.MAIN_ENTITY_LEVEL)
     c['entity'] = entity
+
+    for item in entity_descriptions:
+        c['descriptions']['expense'][item[0]] = item[1]
 
     # if parameter widget defined use policies/widget template instead of policies/show
     template = 'entities/show_widget.html' if _isWidget(request) else 'entities/show.html'

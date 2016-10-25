@@ -273,7 +273,7 @@
     var breakdowns = {
       'income': {{ economic_breakdown.to_json( labels=descriptions['income'] )|safe }},
       'functional': {{ functional_breakdown.to_json( labels=descriptions['functional'] )|safe }},
-      'expense': {{ economic_breakdown.to_json( labels=descriptions['expense'] )|safe }}
+      'expense': {{ scope_breakdown.to_json( labels=descriptions['expense'] )|safe }}
     };
     var gridData = {
       'income': breakdownToTable(breakdowns['income']),
